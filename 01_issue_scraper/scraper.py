@@ -3,8 +3,8 @@ import os
 from datetime import datetime, timedelta
 
 # Configuration
-REPO_FILE = 'idea_01_issue_scraper/repos.txt'
-RESULTS_FILE = 'idea_01_issue_scraper/results.txt'
+REPO_FILE = '01_issue_scraper/repos.txt'
+RESULTS_FILE = '01_issue_scraper/results.txt'
 GITHUB_TOKEN = os.getenv('GITHUB_TOKEN') # Provided by GH Actions
 
 def get_new_issues(repo):

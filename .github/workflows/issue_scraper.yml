@@ -1,0 +1,40 @@
+name: Daily Issue Scraper
+
+on:
+  schedule:
+    - cron: '0 0 * * *' # Runs at 00:00 UTC every day
+  workflow_dispatch: # Allows you to run it manually for testing
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # Needed to push changes back to the repo
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v5
+
+    - name: Set up Python
+      uses: actions/setup-python@v6
+      with:
+        python-version: '3.x'
+
+    - name: Install dependencies
+      run: pip install requests
+
+    - name: Run scraper
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        python -m pip install --upgrade pip
+        # Specifically points to the requirements file in your idea folder
+        if [ -f idea_01_issue_scraper/requirements.txt ]; then pip install -r idea_01_issue_scraper/requirements.txt; fi
+
+    - name: Commit and Push results
+      run: |
+        git config --global user.name "GitHub Action"
+        git config --global user.email "action@github.com"
+        git add idea_01_issue_scraper/results.txt
+        # Only commit if there are changes
+        git diff --quiet && git diff --staged --quiet || (git commit -m "Update results.txt with new issues" && git push)
